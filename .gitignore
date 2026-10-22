@@ -23,6 +23,10 @@
 # misc
 .DS_Store
 *.pem
+.cursor/
+/_fields.png
+/_legal.png
+/_mod_visible.png
 
 # debug
 npm-debug.log*

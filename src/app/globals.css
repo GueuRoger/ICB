@@ -1,26 +1,85 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-montserrat), "Montserrat", sans-serif;
+  --color-navy: #061e38;
+  --color-brand: #2251ff;
+  --color-mark: #ff9900;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: #ffffff;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: #ffffff;
+  color: #061e38;
+  font-family: var(--font-sans);
+}
+
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.homepage-viewport {
+  position: relative;
+  width: min(1440px, 100%);
+  margin-inline: auto;
+  container-type: inline-size;
+  aspect-ratio: 1440 / 852;
+  overflow: hidden;
+}
+
+.course-viewport {
+  position: relative;
+  width: min(1440px, 100%);
+  margin-inline: auto;
+  container-type: inline-size;
+  aspect-ratio: 1440 / 1024;
+  overflow: hidden;
+}
+
+.course-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1440px;
+  height: 1024px;
+  transform: scale(calc(100cqw / 1440px));
+  transform-origin: top left;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.course-viewport.global-fluency-viewport {
+  aspect-ratio: 1440 / 4138;
+}
+
+.course-canvas.global-fluency-canvas {
+  height: 4138px;
+}
+
+.global-fluency-sidebar {
+  position: fixed;
+  z-index: 30;
+  width: 308px;
+  height: 884px;
+  transform-origin: top left;
+  background: transparent;
+}
+
+.homepage-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1440px;
+  height: 852px;
+  transform: scale(calc(100cqw / 1440px));
+  transform-origin: top left;
+  background: #ffffff;
+  overflow: hidden;
 }
