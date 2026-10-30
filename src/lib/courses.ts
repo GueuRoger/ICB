@@ -74,17 +74,31 @@ export function coursePdfHref(value: unknown) {
   }
 }
 
+/** App slug → possible legacy DB slugs (until SQL normalization). */
+const courseSlugCandidates: Record<string, string[]> = {
+  "world-stage": ["world-stage", "World stage"],
+};
+
+async function fetchCourseRow(slug: string): Promise<CourseRow | null> {
+  const candidates = courseSlugCandidates[slug] ?? [slug];
+  for (const candidate of candidates) {
+    const withPdf = await supabase
+      .from("courses")
+      .select(`${courseColumns}, pdf_url`)
+      .eq("slug", candidate)
+      .limit(1);
+    const result =
+      withPdf.error && (withPdf.error.code === "42703" || withPdf.error.code === "PGRST204")
+        ? await supabase.from("courses").select(courseColumns).eq("slug", candidate).limit(1)
+        : withPdf;
+    const row = (result.data?.[0] ?? null) as CourseRow | null;
+    if (row) return row;
+  }
+  return null;
+}
+
 async function courseView(record: CourseRecord, locale: Locale, translate: (text: string) => string): Promise<CourseView> {
-  const withPdf = await supabase
-    .from("courses")
-    .select(`${courseColumns}, pdf_url`)
-    .eq("slug", record.slug)
-    .limit(1);
-  const result =
-    withPdf.error && (withPdf.error.code === "42703" || withPdf.error.code === "PGRST204")
-      ? await supabase.from("courses").select(courseColumns).eq("slug", record.slug).limit(1)
-      : withPdf;
-  const row = (result.data?.[0] ?? null) as CourseRow | null;
+  const row = await fetchCourseRow(record.slug);
 
   let moduleRows: ModuleRow[] = [];
   if (row?.id) {

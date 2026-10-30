@@ -24,14 +24,8 @@ const same = { same: true } as const;
 const globalFluencySolution =
   "The solution to our problems lay not in books or trainings but in our own minds. You are abrilliant person in your field already more difficult than English, why would English be difficult for you, to the point of even blocking your progress?";
 
-const globalFluencyDifference =
-  "It's simple. In this program you get work with Roger, who is a software engineer, inventor and entrepreneur. He grew up in rural francophone Africa and rose to the world stage through self-reliance. He acquire English and Spanish through unconventional methods mostly for his own desire to have a seat on world stage. And today he share just that with hundreds of corporate leaders from around the world who simply can't afford to be viewed as a second class citizen in front of their international peers";
-
 const worldStageProgram =
   "World Stage is a private, 12-month communication mentorship for senior leaders who operate in complex, high-stakes environments. It helps you communicate with greater clarity, influence and composure — so you can lead more effectively and contribute to a more stable, cooperative world.";
-
-const videoDescription =
-  "In this short video, Roger explains the mission behind world stage, who it is for, and what you can expect from it";
 
 export const contentCatalog: ContentEntry[] = [
   e("shared", "brand", "brand_first", "Roger", same),
@@ -47,7 +41,43 @@ export const contentCatalog: ContentEntry[] = [
   e("shared", "nav", "nav_products", "Our products"),
   e("shared", "nav", "nav_news", "News"),
   e("shared", "nav", "nav_login", "Login"),
+  e("shared", "nav", "nav_account", "Account", { fr: "Compte" }),
+  e("shared", "nav", "nav_account_menu_label", "Account menu", { fr: "Menu du compte" }),
+  e("shared", "nav", "nav_logout", "Logout", { fr: "Se déconnecter" }),
   e("shared", "nav", "nav_cart", "Cart"),
+  e("shared", "nav", "nav_my_course", "My Course", { fr: "Mon cours" }),
+  e("shared", "form", "show_password", "Show password", { fr: "Afficher le mot de passe" }),
+  e("shared", "form", "hide_password", "Hide password", { fr: "Masquer le mot de passe" }),
+  e("my-course", "meta", "title", "My Course", { fr: "Mon cours" }),
+  e(
+    "my-course",
+    "meta",
+    "document_description",
+    "Open the course videos for your enrolled programs.",
+    { fr: "Accédez aux vidéos des programmes auxquels vous êtes inscrit." },
+  ),
+  e("my-course", "body", "heading", "My Course", { fr: "Mon cours" }),
+  e("my-course", "body", "loading", "Checking your enrollments…", {
+    fr: "Vérification de vos inscriptions…",
+  }),
+  e(
+    "my-course",
+    "body",
+    "empty",
+    "You do not have an active course enrollment yet. Purchase a program to get access.",
+    {
+      fr: "Vous n'avez pas encore d'inscription active. Achetez un programme pour y accéder.",
+    },
+  ),
+  e(
+    "my-course",
+    "body",
+    "choice_prompt",
+    "Choose which course you want to open.",
+    { fr: "Choisissez le cours que vous souhaitez ouvrir." },
+  ),
+  e("my-course", "body", "choice_global_fluency", "Global Fluency", same),
+  e("my-course", "body", "choice_world_stage", "World Stage", same),
   e("shared", "footer", "footer_shop", "Shop"),
   e("shared", "footer", "footer_book", "Book Roger"),
   e("shared", "footer", "footer_speaking", "Speaking engagement"),
@@ -98,23 +128,41 @@ export const contentCatalog: ContentEntry[] = [
 
   e("about", "meta", "title", "About"),
   e("about", "meta", "document_description", "Roger Gueu — international speaker, engineer, and inventor."),
-  e("about", "speaker", "speaker_kicker", "International"),
-  e("about", "speaker", "speaker_heading", "Speaker"),
+  e("about", "speaker", "speaker_heading", "International Speaker"),
   e("about", "speaker", "speaker_line_1", "In this short video, Roger explains the mission behind world stage, who it is for,"),
-  e("about", "speaker", "speaker_line_2", "and what you can expect from it"),
-  e("about", "speaker", "speaker_image", "/images/about-speaker.png", same),
+  // Empty companions: DB may store the full bio in line_1 only; do not fall back to short stubs.
+  e("about", "speaker", "speaker_line_2", "", same),
+  e(
+    "about",
+    "speaker",
+    "speaker_image",
+    "https://apfvyuwziegbxyyyuory.supabase.co/storage/v1/object/public/about/speaker.png",
+    same,
+  ),
   e("about", "speaker", "speaker_image_alt", "Roger Gueu in a navy suit and red tie"),
   e("about", "engineer", "engineer_heading", "Engineer"),
   e("about", "engineer", "engineer_line_1", "In this short video, Roger explains the mission behind world stage, who it is for,"),
-  e("about", "engineer", "engineer_line_2", "and what you can expect\u00A0\u00A0an here is what we\u2019re going to do to succeed"),
-  e("about", "engineer", "engineer_image", "/images/about-engineer.png", same),
+  e("about", "engineer", "engineer_line_2", "", same),
+  e(
+    "about",
+    "engineer",
+    "engineer_image",
+    "https://apfvyuwziegbxyyyuory.supabase.co/storage/v1/object/public/about/engineer.png",
+    same,
+  ),
   e("about", "engineer", "engineer_image_alt", "Roger Gueu standing with his arms crossed"),
   e("about", "inventor", "inventor_heading", "Inventor"),
   e("about", "inventor", "inventor_line_1", "Right now this guy is an inventor, next he\u2019s oing to release greatr products that"),
-  e("about", "inventor", "inventor_line_2", "other people are going to use this short video, Roger explains the mission behind"),
-  e("about", "inventor", "inventor_line_3", "world stage, who it is for, and what you can expect\u00A0\u00A0an here is what we\u2019re going"),
-  e("about", "inventor", "inventor_line_4", "to do to succeed"),
-  e("about", "inventor", "inventor_image", "/images/about-inventor.png", same),
+  e("about", "inventor", "inventor_line_2", "", same),
+  e("about", "inventor", "inventor_line_3", "", same),
+  e("about", "inventor", "inventor_line_4", "", same),
+  e(
+    "about",
+    "inventor",
+    "inventor_image",
+    "https://apfvyuwziegbxyyyuory.supabase.co/storage/v1/object/public/about/inventor.png",
+    same,
+  ),
   e("about", "inventor", "inventor_image_alt", "Roger Gueu adjusting his jacket cuff"),
 
   e("news", "meta", "title", "News"),
@@ -129,12 +177,29 @@ export const contentCatalog: ContentEntry[] = [
   e("courses", "catalog", "portrait_alt", "Roger Gueu", same),
 
   e("global-fluency", "meta", "document_description", "Global Fluency course details by Roger Gueu."),
-  e("global-fluency", "hero", "headline_lead", "Your ultimate program to "),
-  e("global-fluency", "hero", "headline_emphasis", "live in English the way you do French, land the top jobs top international companies and institutions"),
+  // Cleared: obsolete "Your ultimate program to " (was catalog fallback for empty EN).
+  e("global-fluency", "hero", "headline_lead", "", same),
+  // CMS-owned: site_content.headline_emphasis (no catalog fallback text).
+  e("global-fluency", "hero", "headline_emphasis", "", same),
   e("global-fluency", "hero", "solution", globalFluencySolution),
-  e("global-fluency", "hero", "hero_body", globalFluencySolution),
+  // CMS-owned: site_content.hero_body (no catalog fallback text).
+  e("global-fluency", "hero", "hero_body", "", same),
   e("global-fluency", "hero", "different_heading", "What makes Global Fluency different"),
-  e("global-fluency", "hero", "intro_image", "/images/global-fluency-intro.png", same),
+  e(
+    "global-fluency",
+    "hero",
+    "intro_image",
+    "https://apfvyuwziegbxyyyuory.supabase.co/storage/v1/object/public/global-fluency/intro-thumbnail.png",
+    same,
+  ),
+  e(
+    "global-fluency",
+    "hero",
+    "intro_video",
+    "https://apfvyuwziegbxyyyuory.supabase.co/storage/v1/object/public/global-fluency/intro-video.mp4",
+    same,
+  ),
+  e("global-fluency", "hero", "intro_play", "Play program introduction"),
   e("global-fluency", "hero", "intro_alt", "Roger Gueu introducing the program"),
   e("global-fluency", "hero", "discover", "Discover Global Fluency"),
   e("global-fluency", "hero", "intro_heading", "Personal introduction to the program"),
@@ -142,54 +207,121 @@ export const contentCatalog: ContentEntry[] = [
   e("global-fluency", "hero", "pdf_preview", "PDF PREVIEW"),
   e("global-fluency", "offerings", "offerings", "Offerings"),
   e("global-fluency", "offerings", "offer_1_title_1", "12-month private"),
-  e("global-fluency", "offerings", "offer_1_title_2", "mentorship"),
+  // Empty: DB may store the full title in offer_1_title_1 only (e.g. "90-Day Transformation").
+  e("global-fluency", "offerings", "offer_1_title_2", "", same),
   e("global-fluency", "offerings", "offer_1_body_1", "You're supported"),
-  e("global-fluency", "offerings", "offer_1_body_2", "until you're"),
-  e("global-fluency", "offerings", "offer_1_body_3", "absolutely ready"),
+  // Empty companions: full line may live in offer_1_body_1 only (DB EN).
+  e("global-fluency", "offerings", "offer_1_body_2", "", same),
+  e("global-fluency", "offerings", "offer_1_body_3", "", same),
   e("global-fluency", "offerings", "offer_2_title_1", "Access to life changing"),
-  e("global-fluency", "offerings", "offer_2_title_2", "techniques"),
+  // Empty: full EN title may live in offer_2_title_1 only.
+  e("global-fluency", "offerings", "offer_2_title_2", "", same),
   e("global-fluency", "offerings", "offer_2_body_1", "You access wha is"),
-  e("global-fluency", "offerings", "offer_2_body_2", "changing lives"),
-  e("global-fluency", "offerings", "offer_3_title_1", "Access to international"),
-  e("global-fluency", "offerings", "offer_3_title_2", "environment"),
-  e("global-fluency", "offerings", "offer_3_body_1", "You access a"),
-  e("global-fluency", "offerings", "offer_3_body_2", "community of other"),
-  e("global-fluency", "offerings", "offer_3_body_3", "speakers"),
-  e("global-fluency", "description", "course_word", "Course"),
-  e("global-fluency", "description", "description_word", "Description"),
+  // Empty: full EN body may live in offer_2_body_1 only.
+  e("global-fluency", "offerings", "offer_2_body_2", "", same),
+  e("global-fluency", "offerings", "offer_3_title_1", "Access to an international environment"),
+  // Empty: full EN title lives in offer_3_title_1 only.
+  e("global-fluency", "offerings", "offer_3_title_2", "", same),
+  e("global-fluency", "offerings", "offer_3_body_1", "You access a community of other speakers."),
+  // Empty companions: full EN body lives in offer_3_body_1 only (DB EN).
+  e("global-fluency", "offerings", "offer_3_body_2", "", same),
+  e("global-fluency", "offerings", "offer_3_body_3", "", same),
+  // Unused on page (headings use description_word / breakdown_word).
+  e("global-fluency", "description", "course_word", "", same),
+  // CMS-owned: site_content.description_word (full two-tone heading).
+  e("global-fluency", "description", "description_word", "", same),
   e("global-fluency", "description", "why_heading", "Why World Stage"),
   e("global-fluency", "description", "why_body", globalFluencySolution),
-  e("global-fluency", "description", "different_body", globalFluencyDifference),
+  // CMS-owned: site_content.different_body (no catalog fallback text).
+  e("global-fluency", "description", "different_body", "", same),
   e("global-fluency", "description", "technology_body", globalFluencySolution),
   e("global-fluency", "description", "resources_body", globalFluencySolution),
-  e("global-fluency", "description", "breakdown_word", "Breakdown"),
+  // CMS-owned: site_content.breakdown_word (full two-tone heading).
+  e("global-fluency", "description", "breakdown_word", "", same),
   e("global-fluency", "description", "module_word", "Module"),
-  e("global-fluency", "description", "innovative", "Innovative"),
-  e("global-fluency", "description", "technology", "Technology"),
-  e("global-fluency", "description", "proven", "Proven Content "),
-  e("global-fluency", "description", "resources", "& Resources"),
+  // Unused: full heading lives in site_content.technology.
+  e("global-fluency", "description", "innovative", "", same),
+  // CMS-owned: site_content.technology (full two-tone heading).
+  e("global-fluency", "description", "technology", "", same),
+  // Unused: full heading lives in site_content.resources.
+  e("global-fluency", "description", "proven", "", same),
+  // CMS-owned: site_content.resources (full two-tone heading; last word blue).
+  e("global-fluency", "description", "resources", "", same),
   e("global-fluency", "faq", "faqs", "FAQs"),
   e("global-fluency", "faq", "faq_question", "Q: Where do I access my digital courses?"),
   e("global-fluency", "faq", "faq_answer_label", "A:"),
   e("global-fluency", "faq", "faq_answer", globalFluencySolution),
-  e("global-fluency", "sidebar", "cover_image", "/images/world-stage-cover.png", same),
-  e("global-fluency", "sidebar", "cover_alt", "World Stage book"),
+  // Legacy sidebar keys — product cover now comes from courses.thumbnail_url.
+  e("global-fluency", "sidebar", "cover_image", "/images/global-fluency-book.png", same),
+  e("global-fluency", "sidebar", "cover_alt", "Global Fluency book"),
   e("global-fluency", "sidebar", "buy_now", "Buy now"),
   e("global-fluency", "sidebar", "course_language", "English"),
   e("global-fluency", "sidebar", "sidebar_label", "Global Fluency purchase"),
-  e("global-fluency", "sidebar", "link_description", "Course description"),
-  e("global-fluency", "sidebar", "link_breakdown", "Course Breakdown"),
-  e("global-fluency", "sidebar", "link_technology", "Innovative technology"),
-  e("global-fluency", "sidebar", "link_resources", "Proven content & Resources"),
-  e("global-fluency", "sidebar", "link_faqs", "FAQs"),
+  // Unused: sidebar reads description_word.
+  e("global-fluency", "sidebar", "link_description", "", same),
+  // Unused: sidebar reads breakdown_word.
+  e("global-fluency", "sidebar", "link_breakdown", "", same),
+  // Unused: sidebar reads technology.
+  e("global-fluency", "sidebar", "link_technology", "", same),
+  // Sidebar-only short label (section heading uses resources).
+  e("global-fluency", "sidebar", "link_resources", "Content & Resources"),
+  // Unused: sidebar reads faqs.
+  e("global-fluency", "sidebar", "link_faqs", "", same),
   e("global-fluency", "sidebar", "flag_image", "/images/flag.png", same),
 
   e("world-stage", "meta", "document_description", "World Stage course details by Roger Gueu."),
-  e("world-stage", "hero", "hero_image", "/images/world-stage-hero.png", same),
+  e("world-stage", "hero", "hero_image", "/images/world-stage-hero-bg.png", same),
   e("world-stage", "hero", "hero_alt", "Roger Gueu in front of international flags"),
-  e("world-stage", "hero", "sr_heading", "Carry the full weight of your role on the world stage"),
+  e("world-stage", "hero", "hero_tagline", "A stronger voice for a more stable world", {
+    fr: "Une voix plus forte pour un monde plus stable",
+  }),
+  // Unused: full headline lives in site_content.sr_heading (frontend splits white/blue).
+  e("world-stage", "hero", "headline_lead", "", same),
+  e("world-stage", "hero", "headline_emphasis", "", same),
+  e(
+    "world-stage",
+    "hero",
+    "sr_heading",
+    "Give your career the global opportunities it deserves",
+    { fr: "Donnez à votre carrière les opportunités internationales qu'elle mérite" },
+  ),
+  e(
+    "world-stage",
+    "hero",
+    "hero_body",
+    "A private 12-month mentorship for leaders who must communicate with clarity and credibility on the world stage",
+    {
+      fr: "Un mentorat privé de 12 mois pour les dirigeants qui doivent communiquer avec clarté et crédibilité sur la scène mondiale",
+    },
+  ),
   e("world-stage", "hero", "apply", "Apply to World Stage"),
-  e("world-stage", "hero", "intro_image", "/images/global-fluency-intro.png", same),
+  e("world-stage", "hero", "hero_footer_1", "BETTER EXPRESSION", { fr: "MEILLEURE EXPRESSION" }),
+  e("world-stage", "hero", "hero_footer_2", "BRIGHTER FUTURE", { fr: "AVENIR PLUS RADIEUX" }),
+  e("world-stage", "hero", "hero_footer_3", "MORE FULFILLMENT", { fr: "PLUS D'ÉPANOUISSEMENT" }),
+  e(
+    "world-stage",
+    "hero",
+    "hero_callout",
+    "NOW IS THE TIME TO TAKE YOUR SEAT ON THE WORLD TABLE",
+    { fr: "IL EST TEMPS DE PRENDRE VOTRE PLACE À LA TABLE MONDIALE" },
+  ),
+  e(
+    "world-stage",
+    "hero",
+    "intro_image",
+    "https://apfvyuwziegbxyyyuory.supabase.co/storage/v1/object/public/world-stage/intro-thumbnail.png",
+    same,
+  ),
+  e(
+    "world-stage",
+    "hero",
+    "intro_video",
+    "https://apfvyuwziegbxyyyuory.supabase.co/storage/v1/object/public/world-stage/intro-video.mp4",
+    same,
+  ),
+  e("world-stage", "hero", "intro_play", "Play program introduction", {
+    fr: "Lire la présentation du programme",
+  }),
   e("world-stage", "hero", "intro_alt", "Roger Gueu introducing World Stage"),
   e("world-stage", "hero", "program_video", "Program video"),
   e("world-stage", "hero", "intro_heading", "A personal introduction to world stage"),
@@ -356,20 +488,52 @@ export const contentCatalog: ContentEntry[] = [
   e("forgot-password-confirmation", "confirmation", "received", "Your request has been received."),
   e("forgot-password-confirmation", "confirmation", "sent", "Password-reset instructions have been sent to your email."),
 
-  e("videos", "meta", "title", "Videos"),
-  e("videos", "meta", "document_description", "Course videos for logged-in students."),
-  e("videos", "player", "play", "Play"),
-  e("videos", "player", "poster", "/images/global-fluency-intro.png", same),
-  e("videos", "list", "video_1_number", "01", same),
-  e("videos", "list", "video_1_title", "How to change your self-image"),
-  e("videos", "list", "video_1_description", videoDescription),
-  e("videos", "list", "video_1_duration", "2:18", same),
-  e("videos", "list", "video_1_youtube_id", "M7lc1UVf-VE", same),
-  e("videos", "list", "video_2_number", "02", same),
-  e("videos", "list", "video_2_title", "How to win with speaking"),
-  e("videos", "list", "video_2_description", videoDescription),
-  e("videos", "list", "video_2_duration", "2:18", same),
-  e("videos", "list", "video_2_youtube_id", "jNQXAC9IVRw", same),
+  e("global-fluency-videos", "meta", "title", "Global Fluency Videos", {
+    fr: "Vidéos Global Fluency",
+  }),
+  e(
+    "global-fluency-videos",
+    "meta",
+    "document_description",
+    "Course videos for Global Fluency students.",
+    { fr: "Vidéos de cours pour les étudiants Global Fluency." },
+  ),
+  e("global-fluency-videos", "player", "play", "Play", { fr: "Lire" }),
+  e("global-fluency-videos", "access", "loading", "Loading your course videos…", {
+    fr: "Chargement de vos vidéos de cours…",
+  }),
+  e(
+    "global-fluency-videos",
+    "access",
+    "denied",
+    "You need an active enrollment to watch these course videos.",
+    {
+      fr: "Vous devez avoir une inscription active pour regarder ces vidéos de cours.",
+    },
+  ),
+  e("world-stage-videos", "meta", "title", "World Stage Videos", {
+    fr: "Vidéos World Stage",
+  }),
+  e(
+    "world-stage-videos",
+    "meta",
+    "document_description",
+    "Course videos for World Stage students.",
+    { fr: "Vidéos de cours pour les étudiants World Stage." },
+  ),
+  e("world-stage-videos", "player", "play", "Play", { fr: "Lire" }),
+  e("world-stage-videos", "access", "loading", "Loading your course videos…", {
+    fr: "Chargement de vos vidéos de cours…",
+  }),
+  e(
+    "world-stage-videos",
+    "access",
+    "denied",
+    "You need an active enrollment to watch these course videos.",
+    {
+      fr: "Vous devez avoir une inscription active pour regarder ces vidéos de cours.",
+    },
+  ),
 
   e("payments", "message", "failure_message", "The payment could not be prepared. Try again.", { fr: "Le paiement n'a pas pu être préparé. Réessayez." }),
   e("payments", "message", "request_title", "ICB payment request", { fr: "Demande de paiement ICB" }),

@@ -3,7 +3,13 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useCopy } from "@/i18n/provider";
-import { checkoutReturnPath, hasCheckoutIntent, readPaymentCopy, resumeCheckout } from "@/lib/payments";
+import { PasswordInput } from "@/components/password-input";
+import {
+  checkoutReturnPath,
+  GLOBAL_FLUENCY_PAYMENT_PATH,
+  hasCheckoutIntent,
+  restoreCartFromCheckoutIntent,
+} from "@/lib/payments";
 import { registerStudent, safeReturnPath } from "@/lib/student-auth";
 import { supabase } from "@/lib/supabase";
 
@@ -15,8 +21,7 @@ const fieldClass =
 
 export function StudentSignup() {
   const router = useRouter();
-  const text = useCopy("signup", "payments", "shared");
-  const payment = readPaymentCopy(text);
+  const text = useCopy("signup", "shared");
   const errors: Record<string, string> = {
     "Fill in every field.": "error_fields",
     "Enter a valid email address.": "error_email",
@@ -49,16 +54,13 @@ export function StudentSignup() {
     }
     const next = safeReturnPath(new URLSearchParams(window.location.search).get("next"));
     if (hasCheckoutIntent()) {
-      const resumed = await resumeCheckout(payment);
-      if (resumed === "away") return;
-      if (resumed === "done") {
-        router.push(checkoutReturnPath() || "/courses/global-fluency/payment");
-        return;
-      }
+      // Return to checkout; CartPage detects the intent and opens WhatsApp once.
+      restoreCartFromCheckoutIntent();
+      router.replace(checkoutReturnPath() || next || GLOBAL_FLUENCY_PAYMENT_PATH);
       return;
     }
     const { data } = await supabase.auth.getSession();
-    router.push(data.session && next ? next : "/videos");
+    router.push(data.session && next ? next : "/");
   }
 
   return (
@@ -147,10 +149,9 @@ export function StudentSignup() {
             <label htmlFor="password" className="absolute top-[658px] left-[214px] text-[18px] leading-[22px] font-bold text-[#000000]" style={sans}>
               {text("password")}
             </label>
-            <input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               autoComplete="new-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
@@ -165,10 +166,9 @@ export function StudentSignup() {
             >
               {text("confirm")}
             </label>
-            <input
+            <PasswordInput
               id="confirm-password"
               name="confirm-password"
-              type="password"
               autoComplete="new-password"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}

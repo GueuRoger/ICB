@@ -93,34 +93,42 @@ security definer
 set search_path = public
 as $icb$
 begin
-  if new.status = 'paid' and old.status is distinct from 'paid' then
-    insert into public.enrollments (
-      user_id,
-      course_id,
-      payment_id,
-      status,
-      statu,
-      updated_at,
-      enrolled_at
-    )
-    select distinct
-      new.user_id,
-      payment_items.course_id,
-      new.id,
-      'active',
-      'active',
-      now(),
-      now()
-    from public.payment_items
-    where payment_items.payment_id = new.id
-      and payment_items.course_id is not null
-    on conflict (user_id, course_id) do update
-      set status = 'active',
-          statu = 'active',
-          payment_id = excluded.payment_id,
-          updated_at = now(),
-          enrolled_at = coalesce(public.enrollments.enrolled_at, excluded.enrolled_at);
+  if new.status is distinct from 'paid' or old.status is not distinct from 'paid' then
+    return new;
   end if;
+
+  if new.user_id is null then
+    raise exception
+      'Cannot activate enrollment: payment % has no user_id. The customer must be logged in when paying.',
+      new.id;
+  end if;
+
+  insert into public.enrollments (
+    user_id,
+    course_id,
+    payment_id,
+    status,
+    statu,
+    updated_at,
+    enrolled_at
+  )
+  select distinct
+    new.user_id,
+    payment_items.course_id,
+    new.id,
+    'active',
+    'active',
+    now(),
+    now()
+  from public.payment_items
+  where payment_items.payment_id = new.id
+    and payment_items.course_id is not null
+  on conflict (user_id, course_id) do update
+    set status = 'active',
+        statu = 'active',
+        payment_id = excluded.payment_id,
+        updated_at = now(),
+        enrolled_at = coalesce(public.enrollments.enrolled_at, excluded.enrolled_at);
 
   return new;
 end;

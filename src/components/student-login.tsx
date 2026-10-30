@@ -4,7 +4,13 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useCopy } from "@/i18n/provider";
 import { DocumentTitle } from "@/components/document-title";
-import { checkoutReturnPath, hasCheckoutIntent, readPaymentCopy, resumeCheckout } from "@/lib/payments";
+import { PasswordInput } from "@/components/password-input";
+import {
+  checkoutReturnPath,
+  GLOBAL_FLUENCY_PAYMENT_PATH,
+  hasCheckoutIntent,
+  restoreCartFromCheckoutIntent,
+} from "@/lib/payments";
 import { safeReturnPath, signInStudent } from "@/lib/student-auth";
 
 const sans = { fontFamily: "var(--font-montserrat)" } as const;
@@ -15,8 +21,7 @@ const fieldClass =
 
 export function StudentLogin() {
   const router = useRouter();
-  const text = useCopy("login", "payments", "shared");
-  const payment = readPaymentCopy(text);
+  const text = useCopy("login", "shared");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -41,12 +46,12 @@ export function StudentLogin() {
     }
     const next = safeReturnPath(new URLSearchParams(window.location.search).get("next"));
     if (hasCheckoutIntent()) {
-      const resumed = await resumeCheckout(payment);
-      if (resumed === "away") return;
-      router.push(checkoutReturnPath() || next || "/courses/global-fluency/payment");
+      // Return to checkout; CartPage detects the intent and opens WhatsApp once.
+      restoreCartFromCheckoutIntent();
+      router.replace(checkoutReturnPath() || next || GLOBAL_FLUENCY_PAYMENT_PATH);
       return;
     }
-    router.push(next || "/videos");
+    router.push(next || "/");
   }
 
   return (
@@ -98,10 +103,9 @@ export function StudentLogin() {
             >
               {text("password")}
             </label>
-            <input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               autoComplete="current-password"
               aria-describedby="password-hint"
               value={password}

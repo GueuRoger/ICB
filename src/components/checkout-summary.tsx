@@ -52,9 +52,7 @@ export function CheckoutSummary({
             <img
               src={image}
               alt=""
-              width={1060}
-              height={1484}
-              className="absolute left-[82px] h-[144px] w-[96px] object-cover"
+              className="absolute left-[82px] h-auto max-h-[144px] w-auto max-w-[96px] object-contain"
               style={{ top: top + 8 }}
             />
             <span

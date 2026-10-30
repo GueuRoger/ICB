@@ -3,6 +3,7 @@ begin;
 create table if not exists public.payments (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users (id) on delete cascade,
+  customer_email text,
   total_amount numeric(12, 2) not null default 0,
   currency text not null default 'USD',
   payment_method text not null,
@@ -68,14 +69,27 @@ language plpgsql
 security definer
 set search_path = public
 as $icb$
+declare
+  account_email text;
 begin
   if auth.uid() is null then
-    raise exception 'Login required';
+    raise exception 'Authentication required to create a payment.';
   end if;
+
+  select users.email
+  into account_email
+  from auth.users as users
+  where users.id = auth.uid();
+
+  if account_email is null or btrim(account_email) = '' then
+    raise exception 'Authenticated account email is required to create a payment.';
+  end if;
+
   if new.payment_method not in ('wave', 'card') then
     raise exception 'Invalid payment method';
   end if;
   new.user_id := auth.uid();
+  new.customer_email := lower(btrim(account_email));
   new.status := 'pending';
   new.reference := public.generate_payment_reference();
   new.total_amount := 0;
@@ -160,34 +174,43 @@ security definer
 set search_path = public
 as $icb$
 begin
-  if new.status = 'paid' and old.status is distinct from 'paid' then
-    insert into public.enrollments (
-      user_id,
-      course_id,
-      payment_id,
-      status,
-      statu,
-      updated_at,
-      enrolled_at
-    )
-    select distinct
-      new.user_id,
-      payment_items.course_id,
-      new.id,
-      'active',
-      'active',
-      now(),
-      now()
-    from public.payment_items
-    where payment_items.payment_id = new.id
-      and payment_items.course_id is not null
-    on conflict (user_id, course_id) do update
-      set status = 'active',
-          statu = 'active',
-          payment_id = excluded.payment_id,
-          updated_at = now(),
-          enrolled_at = coalesce(public.enrollments.enrolled_at, excluded.enrolled_at);
+  if new.status is distinct from 'paid' or old.status is not distinct from 'paid' then
+    return new;
   end if;
+
+  if new.user_id is null then
+    raise exception
+      'Cannot activate enrollment: payment % has no user_id. The customer must be logged in when paying.',
+      new.id;
+  end if;
+
+  insert into public.enrollments (
+    user_id,
+    course_id,
+    payment_id,
+    status,
+    statu,
+    updated_at,
+    enrolled_at
+  )
+  select distinct
+    new.user_id,
+    payment_items.course_id,
+    new.id,
+    'active',
+    'active',
+    now(),
+    now()
+  from public.payment_items
+  where payment_items.payment_id = new.id
+    and payment_items.course_id is not null
+  on conflict (user_id, course_id) do update
+    set status = 'active',
+        statu = 'active',
+        payment_id = excluded.payment_id,
+        updated_at = now(),
+        enrolled_at = coalesce(public.enrollments.enrolled_at, excluded.enrolled_at);
+
   return new;
 end;
 $icb$;
@@ -201,10 +224,21 @@ as $icb$
 declare
   new_id uuid;
   chosen_currency text;
+  account_email text;
 begin
   if auth.uid() is null then
-    raise exception 'Login required';
+    raise exception 'Authentication required to create a payment.';
   end if;
+
+  select users.email
+  into account_email
+  from auth.users as users
+  where users.id = auth.uid();
+
+  if account_email is null or btrim(account_email) = '' then
+    raise exception 'Authenticated account email is required to create a payment.';
+  end if;
+
   if method not in ('wave', 'card') then
     raise exception 'Invalid payment method';
   end if;
@@ -243,8 +277,22 @@ begin
   join public.courses on courses.slug = btrim(entry.slug)
   limit 1;
 
-  insert into public.payments (user_id, total_amount, currency, payment_method, status)
-  values (auth.uid(), 0, coalesce(nullif(btrim(chosen_currency), ''), 'USD'), method, 'pending')
+  insert into public.payments (
+    user_id,
+    customer_email,
+    total_amount,
+    currency,
+    payment_method,
+    status
+  )
+  values (
+    auth.uid(),
+    lower(btrim(account_email)),
+    0,
+    coalesce(nullif(btrim(chosen_currency), ''), 'USD'),
+    method,
+    'pending'
+  )
   returning payments.id into new_id;
 
   insert into public.payment_items (payment_id, course_id, quantity, unit_price)

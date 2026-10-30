@@ -5,7 +5,16 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { loadCart, saveCart, type CartItem } from "@/lib/cart-store";
 import { formatCartTotal, formatMoney } from "@/lib/money";
-import { beginCheckout, hasPendingPayment, syncPaidCart, type PaymentCopy } from "@/lib/payments";
+import {
+  beginCheckout,
+  hasCheckoutIntent,
+  hasPendingPayment,
+  restoreCartFromCheckoutIntent,
+  resumeCheckout,
+  syncPaidCart,
+  type PaymentCopy,
+} from "@/lib/payments";
+import { supabase } from "@/lib/supabase";
 
 export type CartCourse = {
   slug: string;
@@ -63,22 +72,46 @@ export function CartPage({
 }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const paying = useRef(false);
+  const resumeStarted = useRef(false);
 
   useEffect(() => {
     let stopped = false;
+    if (hasCheckoutIntent()) restoreCartFromCheckoutIntent();
+
     async function refresh() {
       await syncPaidCart();
       if (!stopped) setItems(loadCart());
     }
-    refresh();
+
+    async function resumeAfterAuth() {
+      if (resumeStarted.current || !hasCheckoutIntent()) {
+        await refresh();
+        return;
+      }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (stopped) return;
+      if (!user) {
+        await refresh();
+        return;
+      }
+      resumeStarted.current = true;
+      const result = await resumeCheckout(payment);
+      if (stopped) return;
+      // "away" navigates to WhatsApp; keep cart visible if resume failed/skipped.
+      if (result !== "away") await refresh();
+    }
+
+    void resumeAfterAuth();
     const timer = window.setInterval(() => {
-      if (hasPendingPayment()) refresh();
+      if (hasPendingPayment()) void refresh();
     }, 4000);
     return () => {
       stopped = true;
       window.clearInterval(timer);
     };
-  }, []);
+  }, [payment]);
 
   const bySlug = new Map(courses.map((course) => [course.slug, course]));
   const lines = items.flatMap((item) => {
@@ -140,9 +173,7 @@ export function CartPage({
                 <img
                   src={labels.image}
                   alt=""
-                  width={1060}
-                  height={1484}
-                  className="absolute top-[38.04px] left-[78px] h-[170px] w-[113px] object-cover"
+                  className="absolute top-[38.04px] left-[78px] h-auto max-h-[170px] w-auto max-w-[113px] object-contain"
                 />
                 <p
                   className="absolute top-[60.04px] left-[213px] m-0 w-[172px] text-[36px] leading-[43px] font-semibold whitespace-nowrap text-[#333333]"

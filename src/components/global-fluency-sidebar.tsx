@@ -5,12 +5,13 @@ import { useCopy } from "@/i18n/provider";
 import { addCartItem } from "@/lib/cart-store";
 import { formatMoney } from "@/lib/money";
 
+/** Same CMS keys as section headings, except resources (shorter nav label). */
 const links = [
-  { key: "link_description", id: "course-description" },
-  { key: "link_breakdown", id: "course-breakdown" },
-  { key: "link_technology", id: "innovative-technology" },
+  { key: "description_word", id: "course-description" },
+  { key: "breakdown_word", id: "course-breakdown" },
+  { key: "technology", id: "innovative-technology" },
   { key: "link_resources", id: "proven-content" },
-  { key: "link_faqs", id: "faqs" },
+  { key: "faqs", id: "faqs" },
 ] as const;
 
 const HEADER_HEIGHT = 132;
@@ -19,8 +20,8 @@ function scrollToSection(event: MouseEvent<HTMLAnchorElement>, id: string) {
   const target = document.getElementById(id);
   if (!target) return;
   event.preventDefault();
-  const canvas = document.querySelector(".global-fluency-canvas");
-  const scale = canvas instanceof HTMLElement ? canvas.getBoundingClientRect().width / 1440 : 1;
+  const page = document.querySelector(".global-fluency-page");
+  const scale = page instanceof HTMLElement ? Math.min(1, page.getBoundingClientRect().width / 1440) : 1;
   const top = target.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT * scale;
   window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
   history.pushState(null, "", `#${id}`);
@@ -30,17 +31,26 @@ const SIDEBAR_WIDTH = 308;
 const SIDEBAR_HEIGHT = 884;
 const SIDEBAR_LEFT = 1112;
 
-export function GlobalFluencySidebar({ name, price }: { name: string; price: number }) {
+export function GlobalFluencySidebar({
+  name,
+  price,
+  coverImage,
+}: {
+  name: string;
+  price: number;
+  /** Same course product image as the courses catalog (`courses.thumbnail_url`). */
+  coverImage: string;
+}) {
   const text = useCopy("global-fluency", "shared");
   const [box, setBox] = useState({ top: 16, left: SIDEBAR_LEFT, scale: 1 });
 
   useLayoutEffect(() => {
-    const canvas = document.querySelector(".global-fluency-canvas");
-    if (!(canvas instanceof HTMLElement)) return;
+    const page = document.querySelector(".global-fluency-page");
+    if (!(page instanceof HTMLElement)) return;
 
     const update = () => {
-      const rect = canvas.getBoundingClientRect();
-      const scale = rect.width / 1440;
+      const rect = page.getBoundingClientRect();
+      const scale = Math.min(1, rect.width / 1440);
       const margin = 16 * scale;
       const visualHeight = SIDEBAR_HEIGHT * scale;
       const belowHeader = 132 * scale;
@@ -62,16 +72,19 @@ export function GlobalFluencySidebar({ name, price }: { name: string; price: num
         top -= (top + visualHeight) * Math.min(1, entered / travel);
       }
 
+      // Keep the purchase card in the right gutter; fall back to padding edge on narrow viewports.
+      const left = Math.max(rect.left + 16, rect.right - SIDEBAR_WIDTH * scale - 16);
+
       setBox({
         top,
-        left: rect.left + SIDEBAR_LEFT * scale,
+        left,
         scale,
       });
     };
 
     update();
     const observer = new ResizeObserver(update);
-    observer.observe(canvas);
+    observer.observe(page);
     window.addEventListener("resize", update);
     window.addEventListener("scroll", update, { passive: true });
     return () => {
@@ -99,25 +112,19 @@ export function GlobalFluencySidebar({ name, price }: { name: string; price: num
     >
       <div className="absolute top-[83px] left-0 h-[801px] w-[308px] bg-[#EFF0F0]" />
       <img
-        src={text("cover_image")}
-        alt={text("cover_alt")}
-        width={968}
-        height={1280}
-        className="absolute top-0 left-[102px] h-[138px] w-[104px]"
+        src={coverImage}
+        alt={name}
+        className="absolute top-0 left-[102px] h-auto w-[104px] max-w-[104px] object-contain"
       />
       <img
-        src={text("cover_image")}
+        src={coverImage}
         alt=""
-        width={968}
-        height={1280}
-        className="absolute top-[146px] left-[34px] h-[56px] w-[42px]"
+        className="absolute top-[146px] left-[34px] h-auto w-[42px] max-w-[42px] object-contain"
       />
       <img
-        src={text("cover_image")}
+        src={coverImage}
         alt=""
-        width={968}
-        height={1280}
-        className="absolute top-[146px] left-[116px] h-[56px] w-[42px]"
+        className="absolute top-[146px] left-[116px] h-auto w-[42px] max-w-[42px] object-contain"
       />
       <h2
         className="absolute top-[210px] left-0 w-[308px] text-center text-[24px] leading-[30px] font-bold text-[#333333]"

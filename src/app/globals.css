@@ -55,13 +55,8 @@ body {
   overflow: hidden;
 }
 
-.course-viewport.global-fluency-viewport {
-  aspect-ratio: 1440 / 4138;
-}
-
-.course-canvas.global-fluency-canvas {
-  height: 4138px;
-}
+/* Global Fluency details page is content-driven (see global-fluency-page.tsx).
+   Fixed Figma canvas height removed so Supabase copy can expand the layout. */
 
 .global-fluency-sidebar {
   position: fixed;
@@ -70,6 +65,12 @@ body {
   height: 884px;
   transform-origin: top left;
   background: transparent;
+  pointer-events: none;
+}
+
+.global-fluency-sidebar a,
+.global-fluency-sidebar button {
+  pointer-events: auto;
 }
 
 .homepage-canvas {

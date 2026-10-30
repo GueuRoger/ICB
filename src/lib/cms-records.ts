@@ -49,23 +49,16 @@ const globalFluencyShort = text(
   "The ultimate system to reaching in months the natural fluency you've been dreaming about for years and now entering the company or position that has always been out of your reach",
 );
 
-const worldStageDescription = text(
-  "World Stage is a private, 12-month communication mentorship for senior leaders who operate in complex, high-stakes environments. It helps you communicate with greater clarity, influence and composure — so you can lead more effectively and contribute to a more stable, cooperative world.",
-);
-
-const worldStageShort = text(
-  "Your passport to walking into meetings, presentations and negotiations in English feeling comfortable with your own skin just as you do in French, using the techniques and wisdom Roger discovered and used during his years of meditation and self-discovery",
-);
-
 export const courseRecords: CourseRecord[] = [
   {
     slug: "world-stage",
-    name_en: "World Stage",
-    name_fr: "World Stage",
-    description_en: worldStageDescription.en,
-    description_fr: worldStageDescription.fr,
-    short_description_en: worldStageShort.en,
-    short_description_fr: worldStageShort.fr,
+    // Names/descriptions come from public.courses — keep empty so they never mask Supabase.
+    name_en: "",
+    name_fr: "",
+    description_en: "",
+    description_fr: "",
+    short_description_en: "",
+    short_description_fr: "",
     price: 10000,
     currency: "USD",
     thumbnail_url: "/images/world-stage-book.png",
