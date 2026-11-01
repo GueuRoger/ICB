@@ -53,10 +53,11 @@ async function NewsArticle({ item }: { item: NewsItem }) {
   const hasContent = content.trim().length > 0 && content.trim() !== description.trim();
 
   // Flow layout: image keeps its intrinsic aspect ratio; text follows image height.
-  // Side inset mirrors the previous 249px gutters on the 1440 canvas (~17.3%).
+  // Mobile: 20px gutters (site-consistent), image fills usable width.
+  // Desktop: restore ~17.3% / 249px gutters and 943px image cap.
   return (
-    <article className="mx-auto w-full max-w-[1440px] bg-white px-[clamp(16px,17.3vw,249px)] pb-16">
-      <div className="mx-auto w-full max-w-[943px]">
+    <article className="mx-auto w-full max-w-[1440px] bg-white px-5 pb-16 sm:px-[clamp(20px,17.3vw,249px)]">
+      <div className="mx-auto w-full max-w-none md:max-w-[943px]">
         <img
           src={item.image}
           alt={item.imageAlt}

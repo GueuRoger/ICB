@@ -150,8 +150,10 @@ function AboutGrowing({ c }: { c: AboutCopy }) {
   const titleClass = "m-0 shrink-0 text-[32px] leading-[40px] font-bold text-[#08112E]";
   const textClass =
     "m-0 block h-auto max-h-none w-full shrink-0 overflow-visible text-[16px] leading-[26px] font-normal text-[#4B4F58]";
+  // Mobile: full usable content width. Desktop: keep prior 700px cap.
   // Natural aspect ratio; height follows width. Never crop with object-cover.
-  const imageClass = "block h-auto w-full max-w-[700px] shrink-0 object-contain overflow-visible";
+  const imageClass =
+    "block h-auto w-full max-w-none shrink-0 object-contain overflow-visible lg:max-w-[700px]";
   const copyClass =
     "flex h-auto w-full max-w-[520px] shrink-0 flex-col gap-8 overflow-visible";
 
