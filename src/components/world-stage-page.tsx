@@ -195,9 +195,10 @@ export async function WorldStagePage() {
                 imageAlt={c("intro_alt")}
                 videoSrc={c("intro_video")}
                 playLabel={c("intro_play")}
-                className="relative w-full max-w-[698px] shrink-0 overflow-visible"
-                mediaClassName="block h-auto w-full object-contain"
-                playClassName="pointer-events-none absolute top-1/2 left-1/2 h-[72px] w-[72px] -translate-x-1/2 -translate-y-1/2"
+                // Match Global Fluency intro footprint (max-w 576 × ~324 landscape box).
+                // Portrait WS thumbnails scale down with object-contain instead of filling 576px wide.
+                className="relative mx-auto w-full max-w-[576px] shrink-0 lg:mx-0"
+                mediaClassName="mx-auto block h-auto max-h-[324px] w-auto max-w-full object-contain"
               />
 
               <div className="flex h-auto w-full max-w-[620px] flex-col gap-4 overflow-visible">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { normalizeYoutubeVideoId } from "@/lib/youtube-id";
 
 type GlobalFluencyIntroMediaProps = {
   imageSrc: string;
@@ -20,6 +21,28 @@ const defaultMedia = "block h-auto w-full object-contain";
 const defaultPlay =
   "pointer-events-none absolute top-1/2 left-1/2 h-[76px] w-[76px] -translate-x-1/2 -translate-y-1/2";
 
+type IntroVideoSource =
+  | { type: "youtube"; id: string }
+  | { type: "file"; src: string };
+
+/** Detect YouTube (watch / youtu.be / embed / bare id) vs direct file/Storage URL. */
+function resolveIntroVideo(raw: string): IntroVideoSource | null {
+  const value = raw.trim();
+  if (!value) return null;
+
+  const looksYoutube =
+    /(?:^|\/\/)(?:www\.)?(?:youtube\.com|m\.youtube\.com|music\.youtube\.com|youtu\.be|youtube-nocookie\.com)\b/i.test(
+      value,
+    ) || /^[a-zA-Z0-9_-]{6,15}$/.test(value);
+
+  if (looksYoutube) {
+    const id = normalizeYoutubeVideoId(value);
+    if (id) return { type: "youtube", id };
+  }
+
+  return { type: "file", src: value };
+}
+
 export function GlobalFluencyIntroMedia({
   imageSrc,
   imageAlt,
@@ -30,13 +53,34 @@ export function GlobalFluencyIntroMedia({
   playClassName = defaultPlay,
 }: GlobalFluencyIntroMediaProps) {
   const [playing, setPlaying] = useState(false);
-  const canPlay = Boolean(videoSrc.trim());
+  const source = resolveIntroVideo(videoSrc);
+  const canPlay = source !== null;
 
-  if (playing && canPlay) {
+  if (playing && source?.type === "youtube") {
+    const embed = new URL(`https://www.youtube.com/embed/${source.id}`);
+    embed.searchParams.set("autoplay", "1");
+    embed.searchParams.set("rel", "0");
+    embed.searchParams.set("modestbranding", "1");
+    embed.searchParams.set("playsinline", "1");
+
+    return (
+      <div className={className}>
+        <iframe
+          src={embed.toString()}
+          title={imageAlt || playLabel}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+          allowFullScreen
+          className="aspect-video w-full border-0"
+        />
+      </div>
+    );
+  }
+
+  if (playing && source?.type === "file") {
     return (
       <div className={className}>
         <video
-          src={videoSrc}
+          src={source.src}
           poster={imageSrc}
           controls
           autoPlay
